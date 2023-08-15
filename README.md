@@ -27,7 +27,7 @@ A simple program for RSA encryption, decryption, and signature generation.
 ### Prerequisites
 
 - Python 3.6 or above
-- RSA, Pickle
+- RSA, Pickle, YAML, GZip
 
 ### Installation
 
@@ -40,6 +40,7 @@ $ cd rsa
   ```shell
   pip install rsa
   pip install pickle
+  pip install pyyaml
   ```
 
 ## Usage
