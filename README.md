@@ -28,7 +28,6 @@ A simple program for RSA encryption, decryption, and signature generation.
 
 - Python 3.6 or above
 - RSA, Pickle
-  
 
 ### Installation
 
