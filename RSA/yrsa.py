@@ -54,10 +54,10 @@ def main():
             privateKey, publicKey = loadKeys()
             ciphertext = encrypt(plaintext, publicKey)
             signature = sign(plaintext, privateKey)
-            with open('ciphertext.yaml', 'w') as f:
+            with open('ciphertext.txt', 'w') as f:
                 yaml.dump({'Ciphertext': ciphertext, '\nSignature': signature}, f)
 
-            print('File encrypted and stored in ciphertext.yaml\n')
+            print('File encrypted and stored in ciphertext.txt\n')
 
         elif choice == '2':
             try:
@@ -71,7 +71,7 @@ def main():
                 plaintext = decrypt(ciphertext, privateKey)
                 verification = verify(plaintext, signature, publicKey)
                 if plaintext and verification:
-                    print('\nSuccessfully decrepted and stored in secret.txt\n')
+                    print('\nSuccessfully decrypted and stored in secret.txt\n')
                     with open('secret.txt', 'w') as s:
                         s.write('=============== SIGNATURE VERIFIED ===============\n')
                         s.write(plaintext)
