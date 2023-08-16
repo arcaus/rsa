@@ -150,7 +150,7 @@ def yrsa():
 
 def main():
     while True:
-        print('Welcome to RSA Encryption\nPlease choose your storage method\n1. Pickle\n2. Zipped YAML\n3. Exit')
+        print('Welcome to RSA Encryption\nPlease choose your storage method\n1. Zipped Pickle\n2. YAML\n3. Exit')
         typ_choice = input('Type (1/2/3): ')
         if typ_choice == '1':
             prsa()
