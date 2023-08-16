@@ -12,12 +12,23 @@ def generateKeys():
         p.write(privateKey.save_pkcs1('PEM'))
 
 
-def loadKeys():
-    with open('keys/publicKey.pem', 'rb') as p:
-        publicKey = rsa.PublicKey.load_pkcs1(p.read())
-    with open('keys/privateKey.pem', 'rb') as p:
-        privateKey = rsa.PrivateKey.load_pkcs1(p.read())
-    return privateKey, publicKey
+def loadKeys(key='all'):
+    publicPath = 'keys/publicKey.pem'
+    privatePath = 'keys/privateKey.pem'
+    if key == 'all':
+        with open(publicPath, 'rb') as p:
+            publicKey = rsa.PublicKey.load_pkcs1(p.read())
+        with open(privatePath, 'rb') as p:
+            privateKey = rsa.PrivateKey.load_pkcs1(p.read())
+        return privateKey, publicKey
+    elif key == 'public':
+        with open(publicPath, 'rb') as p:
+            publicKey = rsa.PublicKey.load_pkcs1(p.read())
+        return publicKey
+    elif key == 'private':
+        with open(privatePath, 'rb') as p:
+            privateKey = rsa.PrivateKey.load_pkcs1(p.read())
+        return privateKey
 
 
 def encrypt(plaintext, key):
@@ -44,7 +55,7 @@ def verify(plaintext, signature, key):
 
 def prsa():
     while True:
-        print("Operation Modes:\n1. Encrypt and Sign\n2. Decrypt and Verify\n3. Exit")
+        print("Operation Modes:\n1. Encrypt and Sign\n2. Decrypt and Verify\n3. Go Back")
         choice = input('Choice: ')
 
         if choice == '1':
@@ -52,13 +63,10 @@ def prsa():
             with open(path, 'r') as p:
                 plaintext = p.read()
 
-            generateKeys()
             privateKey, publicKey = loadKeys()
-
             ciphertext = encrypt(plaintext, publicKey)
             signature = sign(plaintext, privateKey)
 
-            # Store ciphertext and signature in a file using pickle
             with open('ciphertext.pkl', 'wb') as f:
                 pickle.dump((ciphertext, signature), f)
 
@@ -75,13 +83,12 @@ def prsa():
                     ciphertext, signature = pickle.load(f)
 
                 privateKey, publicKey = loadKeys()
-
                 plaintext = decrypt(ciphertext, privateKey)
                 verification = verify(plaintext, signature, publicKey)
                 if plaintext and verification:
                     print('\nSuccessfully decrypted and stored in secret.txt\n')
                     with open('secret.txt', 'w') as s:
-                        s.write('=============== SIGNATURE VERIFIED ===============\n')
+                        s.write('=============== SIGNATURE VERIFIED ===============\n\n')
                         s.write(plaintext)
                         s.write('\n=============== SIGNATURE VERIFIED ===============')
                 else:
@@ -100,7 +107,7 @@ def prsa():
 
 def yrsa():
     while True:
-        print("Operation Modes:\n1. Encrypt and Sign\n2. Decrypt and Verify\n3. Exit")
+        print("Operation Modes:\n1. Encrypt and Sign\n2. Decrypt and Verify\n3. Go Back")
         choice = input('Choice: ')
 
         if choice == '1':
@@ -108,7 +115,6 @@ def yrsa():
             with open(path, 'r') as p:
                 plaintext = p.read()
 
-            generateKeys()
             privateKey, publicKey = loadKeys()
             ciphertext = encrypt(plaintext, publicKey)
             signature = sign(plaintext, privateKey)
@@ -124,14 +130,14 @@ def yrsa():
                     data = yaml.load(f, Loader=yaml.FullLoader)
                     ciphertext = data['Ciphertext']
                     signature = data['\nSignature']
-                privateKey, publicKey = loadKeys()
 
+                privateKey, publicKey = loadKeys()
                 plaintext = decrypt(ciphertext, privateKey)
                 verification = verify(plaintext, signature, publicKey)
                 if plaintext and verification:
                     print('\nSuccessfully decrypted and stored in secret.txt\n')
                     with open('secret.txt', 'w') as s:
-                        s.write('=============== SIGNATURE VERIFIED ===============\n')
+                        s.write('=============== SIGNATURE VERIFIED ===============\n\n')
                         s.write(plaintext)
                         s.write('\n=============== SIGNATURE VERIFIED ===============')
                 else:
@@ -150,13 +156,17 @@ def yrsa():
 
 def main():
     while True:
-        print('Welcome to RSA Encryption\nPlease choose your storage method\n1. Zipped Pickle\n2. YAML\n3. Exit')
-        typ_choice = input('Type (1/2/3): ')
+        print('Welcome to RSA Encryption\nPlease choose your option:')
+        print('1. Generate RSA Keys\n2. Zipped Pickled RSA\n3. YAML RSA\n4. Exit')
+        typ_choice = input('Type (1/2/3/4): ')
         if typ_choice == '1':
             prsa()
         elif typ_choice == '2':
             yrsa()
-        elif typ_choice == '3' or typ_choice.lower() == 'exit':
+        elif typ_choice == '3':
+            generateKeys()
+            print('Keys generated and stored in keys/publicKey.pem and keys/privateKey.pem\n')
+        elif typ_choice == '4' or typ_choice.lower() == 'exit':
             print('Thank you for using this program. Goodbye!')
             break
         else:
